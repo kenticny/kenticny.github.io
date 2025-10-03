@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="一个有思想的程序员的技术博客,Golang,Node.js,Python,Game,Music,游戏,音乐,历史">
+    <meta name="author" content="kenticny">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://luyun.io/2015/03/12/node-js-wechat-card-03/"/>
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <title>
+        
+            浅谈微信卡券功能开发（3） |
+        
+        碎片人生
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/fonts.css">
+
+    
+    <link rel="preconnect" href="https://evan.beee.top" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"luyun.io","root":"/","language":"zh-CN"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"/images/logo.svg","favicon":"/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://evan.beee.top/img/wallhaven-wqery6-light.webp","dark":"https://evan.beee.top/img/wallhaven-wqery6-dark.webp"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"一个有思想的程序员，玩游戏，玩音乐，读历史"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":true},"code_block":{"copy":true,"style":"mac"},"pjax":{"enable":true},"lazyload":{"enable":true},"adsense":{"enable":true,"client":"ca-pub-2279937631428525","units":{"article_footer":{"slot":"3741741136","format":"auto","full_width_responsive":true,"style":{"display":"block","width":"100%","min-width":"320px","max-width":"900px","height":"90px"}}}},"version":"1.1.0","friend_links":{"columns":2}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/css/regular.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                碎片人生
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">浅谈微信卡券功能开发（3）</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">kenticny</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2015-03-12 02:17:36</span>
+        <span class="mobile">2015-03-12 02:17</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Node-js/">Node.js</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Wechat/">Wechat</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Wechat-card/">Wechat card</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%BE%AE%E4%BF%A1/">微信</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%8D%A1%E5%88%B8/">微信卡券</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>由于过年回来事情比较多，所以断了一段时间。今天赶紧接着。之前我们介绍完了卡券从创建到发放的基本流程，今天我们将介绍卡券和Code的相关操作。本文主要介绍NodeJS语言下 <a class="link"   target="_blank" rel="noopener" href="https://github.com/kenticny/wechat-card" >wechat-card <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> 模块的操作方式，另外对重要的地方进行特别说明，以便其他语言开发者参考。</p>
+<h2 id="卡券ID列表"><a href="#卡券ID列表" class="headerlink" title="卡券ID列表"></a>卡券ID列表</h2><p>这个接口可以查询到公众号下的所有卡券ID，需要注意下，这里获取的是 <code>卡券ID</code>，而不是卡券信息，使用方法和查询门店列表类似，也是通过 <code>offset</code> 和 <code>count</code> 两个参数来获取列表，接口如下：</p>
+<pre><code>https://api.weixin.qq.com/card/batchget?access_token=TOKEN
+</code></pre>
+<p>通过wechat-card 进行操作的方法如下：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wxCard.<span class="property">card</span>.<span class="title function_">getCardIdList</span>(<span class="number">0</span>, <span class="number">10</span>, <span class="keyword">function</span>(<span class="params">err, ids</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p>这里的两个参数不做过多说明，可以参照查询门店列表接口处的介绍。</p>
+<h2 id="卡券查询"><a href="#卡券查询" class="headerlink" title="卡券查询"></a>卡券查询</h2><p>这个接口时用来通过 <code>卡券ID</code> 查询卡券的详细信息的接口，可以和上面获取卡券ID列表的接口搭配来获取所有卡券的信息。接口如下：</p>
+<pre><code>https://api.weixin.qq.com/card/get?access_token=TOKEN
+</code></pre>
+<p>通过 wechat-card 获取卡券信息方式如下：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下列卡券id仅用于demo，在实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> cardId = <span class="string">&quot;p1Pj9jr90_SQRaVqYI239Ka1erkI&quot;</span>;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">card</span>.<span class="title function_">getCardDetail</span>(cardId, <span class="keyword">function</span>(<span class="params">err, card</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p>接口返回的数据可以参见文档，其实就是添加卡券时候的卡券信息而已。</p>
+<h2 id="修改卡券"><a href="#修改卡券" class="headerlink" title="修改卡券"></a>修改卡券</h2><p>这个接口用于修改卡券信息，当然并不是所有的信息，只是一部分无关紧要的信息而已，很多关键信息都是不允许修改的。接口如下：</p>
+<pre><code>https://api.weixin.qq.com/card/update?access_token=TOKEN
+</code></pre>
+<p>在 wechat-card 修改卡券的方法如下：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的cardid仅用于demo，实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> card = &#123;</span><br><span class="line">  <span class="attr">card_id</span>: <span class="string">&quot;p1Pj9jr90_SQRaVqYI239Ka1erkI&quot;</span>,</span><br><span class="line">  <span class="attr">base_info</span>: &#123;</span><br><span class="line">    <span class="comment">// .. some of base info</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">special_info</span>: &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">card</span>.<span class="title function_">modifyCard</span>(card, <span class="keyword">function</span>(<span class="params">err</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p>需要注意的问题有：</p>
+<ul>
+<li><p>在修改时候需要传递一个参数对象，包含要修改的卡券的 <code>card_id</code>，<code>base_info</code>，和 <code>special_info</code>， 当然这里base_info和special_info可以修改的字段是非常少的，具体哪些字段可以修改，大家可以参照微信官方的文档。而且，<strong>在卡券修改后，已经发放的卡券也会随之而改变，而且修改某些字段后，已经审核通过的卡券会重新进入待审核状态，审核失败的卡券则不会重新审核</strong>，具体哪些字段可以出发重新审核，请大家参照官方文档。</p>
+</li>
+<li><p><strong>微信接口中所有的查询接口都有缓存，所以有一定的几率会造成一种情况，在修改卡券成功后立刻进行查询，有可能缓存没有更新，而导致查询到的数据没有变化，这里有待微信进行优化了。</strong></p>
+</li>
+<li><p>在修改卡券有效期的时候，需要注意的一点是：<strong>修改的时间范围不能小于原有的时间范围</strong>，比如当前卡券有效期为2015-03-12，那么修改的日期必须为2015-3-12以后。</p>
+</li>
+</ul>
+<h2 id="删除卡券"><a href="#删除卡券" class="headerlink" title="删除卡券"></a>删除卡券</h2><p>这个接口可以通过卡券ID删除已经创建的卡券，接口为：</p>
+<pre><code>https://api.weixin.qq.com/card/delete?access_token=TOKEN
+</code></pre>
+<p>使用 wechat-card 删除卡券的方法如下：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的cardid仅用于demo，实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> cardId = <span class="string">&quot;p1Pj9jr90_SQRaVqYI239Ka1erkI&quot;</span>;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">card</span>.<span class="title function_">deleteCard</span>(cardId, <span class="keyword">function</span>(<span class="params">err</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ..</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>这里需要注意的问题有：删除卡券以后，已经被领取的Code还是有效的，可以通过核销Code的方式进行核销。</strong></p>
+<h2 id="Code查询"><a href="#Code查询" class="headerlink" title="Code查询"></a>Code查询</h2><p>查询Code接口可以通过code查询对应的信息，包括code对应的卡券card id，领取code用户的openid，以及卡券的有效期。这里比较奇怪的是没有code的状态，这里期待微信以后可以支持。</p>
+<p>接口为：</p>
+<pre><code>https://api.weixin.qq.com/card/code/get?access_token=TOKEN
+</code></pre>
+<p>在 wechat-card 中查询code的方法如下：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的code仅用于demo，实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> code = <span class="string">&quot;882077290937&quot;</span>;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">code</span>.<span class="title function_">getCodeDetail</span>(code, <span class="keyword">function</span>(<span class="params">err, details</span>) &#123;</span><br><span class="line">  <span class="comment">// details: 为Object类型 包含用户openid，卡券id和卡券有效时间</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Code修改"><a href="#Code修改" class="headerlink" title="Code修改"></a>Code修改</h2><p>这个接口用于修改已经领取的Code值。</p>
+<p>这个接口使用的情况有：当卡券为自定义SN时，并且允许转赠卡券时，当卡券赠送给朋友以后，为了保证Code安全性，需要修改该Code的值，推荐在转赠以后收到<strong>事件推送（事件推送为微信向自定义服务器推送数据，在之后我们会进行详细介绍）时进行修改</strong>。</p>
+<p>接口为：</p>
+<pre><code>https://api.weixin.qq.com/card/code/update?access_token=TOKEN
+</code></pre>
+<p>在 wechat-card 中修改Code的方法为：传递参数为原始Code，对应的卡券ID， 和新的Code</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的卡券id和code仅用于demo，实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> code = <span class="string">&quot;882077290937&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> cardId = <span class="string">&quot;p1Pj9jr90_SQRaVqYI239Ka1erkI&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> newcode = <span class="string">&quot;883920048827&quot;</span>;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">code</span>.<span class="title function_">modifyCode</span>(code, cardId, newcode, <span class="keyword">function</span>(<span class="params">err</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="设置Code失效"><a href="#设置Code失效" class="headerlink" title="设置Code失效"></a>设置Code失效</h2><p>这个接口可以通过Code将已经领取的卡券设置为失效。接口为：</p>
+<pre><code>https://api.weixin.qq.com/card/code/unavailable?access_token=TOKEN
+</code></pre>
+<p>在 wechat-card 中设置Code失效的方法为：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的code仅用于demo，实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> code = <span class="string">&quot;882077290937&quot;</span>;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">code</span>.<span class="title function_">setCodeExpire</span>(code, <span class="keyword">function</span>(<span class="params">err</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="修改卡券库存"><a href="#修改卡券库存" class="headerlink" title="修改卡券库存"></a>修改卡券库存</h2><p>这个接口是用来补充卡券的库存值或者减少库存值，卡券库存即在创建卡券时 <code>base_info.sku.quantity</code> 字段。这个字段无法再修改卡券中进行修改，需要单独的接口进行修改，接口为：</p>
+<pre><code>https://api.weixin.qq.com/card/modifystock?access_token=TOKEN
+</code></pre>
+<p>在 wechat-card 中修改卡券库存的方法为：调用方法的第二个参数为要改变的库存值，<strong>比如增加10个，为+10， 比如减少20个，为-20。</strong></p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的cardid仅用于demo，实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> cardId = <span class="string">&quot;p1Pj9jr90_SQRaVqYI239Ka1erkI&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 减少10库存</span></span><br><span class="line">wxCard.<span class="property">card</span>.<span class="title function_">modifyCardStock</span>(cardId, -<span class="number">10</span>, <span class="keyword">function</span>(<span class="params">err</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 增加10库存</span></span><br><span class="line">wxCard.<span class="property">card</span>.<span class="title function_">modifyCardStock</span>(cardId, <span class="number">10</span>, <span class="keyword">function</span>(<span class="params">err</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>今天先介绍到这里，这篇内容略多，但是操作都是比较简单的，有需要注意的地方也已经标出。最近有好多朋友发邮件问一些问题，之后我会针对我们自己在开发终于到的问题和大家提出的问题专门总结一篇问题总结。大家如果有其他的问题和建议，可以发站内信共同讨论。感谢大家。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：浅谈微信卡券功能开发（3）</li>
+        <li>本文作者：kenticny</li>
+        <li>创建时间：2015-03-12 02:17:36</li>
+        <li>
+            本文链接：https://luyun.io/2015/03/12/node-js-wechat-card-03/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Node-js/">#Node.js</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Wechat/">#Wechat</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Wechat-card/">#Wechat card</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%BE%AE%E4%BF%A1/">#微信</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%8D%A1%E5%88%B8/">#微信卡券</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2015/04/16/golang-concurrent-m-p-g-model/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">初探 Go 语言并发 M-P-G 模型</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2015/02/15/node-js-wechat-card-02/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">浅谈微信卡券功能开发（2）</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+            
+                
+
+
+  <div class="adsense-unit adsense-unit-article_footer">
+    <ins class="adsbygoogle"
+      data-ad-client="ca-pub-2279937631428525"
+      data-ad-slot="3741741136"
+      data-ad-format="auto"
+      
+      
+      
+      
+      
+      data-full-width-responsive="true"
+      style="display:block;width:100%;min-width:320px;max-width:900px;height:90px;">
+    </ins>
+    <script data-pjax>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+            
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5f5e02832431c7e26875',
+                    clientSecret: '984eb6ac0c0de7669aa83d6d11e3b3c8c1c33c4b',
+                    repo: 'kenticny.github.io',
+                    owner: 'kenticny',
+                    admin: ['kenticny'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">浅谈微信卡券功能开发（3）</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%A1%E5%88%B8ID%E5%88%97%E8%A1%A8"><span class="nav-text">卡券ID列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%A1%E5%88%B8%E6%9F%A5%E8%AF%A2"><span class="nav-text">卡券查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%8D%A1%E5%88%B8"><span class="nav-text">修改卡券</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%8D%A1%E5%88%B8"><span class="nav-text">删除卡券</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code%E6%9F%A5%E8%AF%A2"><span class="nav-text">Code查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code%E4%BF%AE%E6%94%B9"><span class="nav-text">Code修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AECode%E5%A4%B1%E6%95%88"><span class="nav-text">设置Code失效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%8D%A1%E5%88%B8%E5%BA%93%E5%AD%98"><span class="nav-text">修改卡券库存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<a href="/">碎片人生</a>
+            
+            <span class="powered-by-container">&nbsp;&nbsp;Powered by <a target="_blank" href="https://hexo.io">Hexo</a>. </span>
+            <span class="theme-version-container">&nbsp;&nbsp;Theme by <a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.0</a>
+            
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+    
+        <script async data-pjax src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2279937631428525" crossorigin="anonymous"></script>
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?95824cda1ebc32e013f3388e3b0f27e6";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2GZ6RF852"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z2GZ6RF852');
+</script>
+</body>
+</html>

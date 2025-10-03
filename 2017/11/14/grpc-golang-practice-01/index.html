@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="一个有思想的程序员的技术博客,Golang,Node.js,Python,Game,Music,游戏,音乐,历史">
+    <meta name="author" content="kenticny">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://luyun.io/2017/11/14/grpc-golang-practice-01/"/>
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <title>
+        
+            gRPC 在 Golang 实践 - 入门 |
+        
+        碎片人生
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/fonts.css">
+
+    
+    <link rel="preconnect" href="https://evan.beee.top" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"luyun.io","root":"/","language":"zh-CN"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"/images/logo.svg","favicon":"/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://evan.beee.top/img/wallhaven-wqery6-light.webp","dark":"https://evan.beee.top/img/wallhaven-wqery6-dark.webp"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"一个有思想的程序员，玩游戏，玩音乐，读历史"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":true},"code_block":{"copy":true,"style":"mac"},"pjax":{"enable":true},"lazyload":{"enable":true},"adsense":{"enable":true,"client":"ca-pub-2279937631428525","units":{"article_footer":{"slot":"3741741136","format":"auto","full_width_responsive":true,"style":{"display":"block","width":"100%","min-width":"320px","max-width":"900px","height":"90px"}}}},"version":"1.1.0","friend_links":{"columns":2}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/css/regular.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                碎片人生
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">gRPC 在 Golang 实践 - 入门</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">kenticny</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2017-11-14 22:17:45</span>
+        <span class="mobile">2017-11-14 22:17</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/gRPC/">gRPC</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Golang/">Golang</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p><code>gRPC</code> 作为一个开源 <code>RPC</code> 框架，而且有 Google 背书也可谓是有深厚的背景，<code>gRPC</code> 采用 <code>protocol buffers</code> 作为 <code>IDL</code>，并且支持多语言跨平台运行，官方支持 <code>C++</code>，<code>C#</code>，<code>Golang</code>，<code>Python</code> 等10种语言，并且都提供了对于语言较为详细的接入文档，所以在使用上也是十分便捷的。本文将以 <code>Golang</code> 为例来介绍 <code>gRPC</code> 的快速入门使用。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>所谓准备，就是要安装所有相关的环境和库，首先是 <code>Golang</code> <del>（这是一句废话）</del>，但是要注意的一点是现在最新的 <code>gRPC</code> 要运行在 <code>Golang v1.6</code> 以上。</p>
+<p>然后就是安装 <code>gRPC</code>，可以通过下面命令进行安装：</p>
+<pre><code>go get -u google.golang.org/grpc
+</code></pre>
+<p>接下要安装 <code>Protocol Buffers</code>，这里包含两部分，第一部分就是安装 <code>protobuf</code> 的编译器，方式很简单，下载地址如下：</p>
+<pre><code>https://github.com/google/protobuf/releases
+</code></pre>
+<ul>
+<li><p>选择合适自己的压缩包进行下载，比如我这里下载了适合 <code>macos</code> 平台的压缩包：<code>protoc-3.5.1-osx-x86_64.zip</code></p>
+</li>
+<li><p>解压这个压缩包：<code>unzip protoc-3.5.1-osx-x86_64.zip</code></p>
+</li>
+<li><p>将解压后 <code>bin/protoc</code> 移动到 PATH 环境变量下面，比如 <code>/usr/local/bin</code>，将 <code>include</code> 文件夹下的内容移动到 <code>/usr/local/includes</code> 下即可</p>
+</li>
+<li><p>可以运行 <code>protoc --help</code> 查看编译器运行帮助</p>
+</li>
+</ul>
+<p>另一部分是要安装编译器的适用 <code>Golang</code> 的插件，安装方式如下：</p>
+<pre><code>go get -u github.com/golang/protobuf/protoc-gen-go
+</code></pre>
+<p>至此运行环境准备完毕。</p>
+<h2 id="定义服务"><a href="#定义服务" class="headerlink" title="定义服务"></a>定义服务</h2><p>前面提到过，<code>gRPC</code> 采用 <code>Protocol Buffers</code> 来定义服务，这里可以先假设一个场景：“服务端提供一个 <code>Version</code> 的接口来获取服务的版本”，下面就是通过 <code>Protocol Buffers</code> 定义这个服务。</p>
+<div class="highlight-container" data-rel="Protobuf"><figure class="iseeu highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义服务接口</span></span><br><span class="line"><span class="keyword">service </span><span class="title class_">DemoService</span> &#123;</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Version (VersionRequest) <span class="keyword">returns</span> (VersionResponse) </span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义 VersionRequest 的消息体</span></span><br><span class="line"><span class="keyword">message </span><span class="title class_">VersionRequest</span> &#123;</span><br><span class="line">  <span class="type">string</span> name = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义 VersionResponse 的消息体</span></span><br><span class="line"><span class="keyword">message </span><span class="title class_">VersionResponse</span> &#123;</span><br><span class="line">  <span class="type">int64</span> version = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>上面的 <code>Protobuf</code> 定义了一个RPC服务 <code>DemoService</code>，包含一个接口 <code>Version</code>，这个接口接受 <code>name</code> 字段，返回 <code>version</code> 字段。</p>
+<p>接下来，我们就要使用 <code>Protobuf</code> 的编译器生成 gRPC 的代码，这里就用到了我们之前安装的 <code>protoc</code> 工具，执行以下命令：</p>
+<pre><code>protoc --go_out=plugins=grpc:pb ./pb/demo_service.proto
+</code></pre>
+<p>上述命令中 <code>--go_out=plugins=grpc:pb</code> 定义了编译完成后输出的代码位置为 <code>pb</code> 目录，<code>./pb/demo_service.proto</code> 为需要编译的 <code>proto</code> 文件。生成的代码文件就不在这里展示了，里面就是定义了一些接口和结构体。</p>
+<h2 id="服务端程序"><a href="#服务端程序" class="headerlink" title="服务端程序"></a>服务端程序</h2><p>服务端程序就是启动一个gRPC服务器，直接上代码：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;net&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;golang.org/x/net/context&quot;</span></span><br><span class="line">  <span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">  pb <span class="string">&quot;xxxx/xxx/demo_service&quot;</span></span><br><span class="line">  <span class="string">&quot;google.golang.org/grpc/reflection&quot;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">type</span> server <span class="keyword">struct</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *server)</span></span> Version(ctx context.Context,</span><br><span class="line">  in *pb.VersionRequest) (*pb.VersionResponse, <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &amp;pb.VersionResponse &#123;Version: <span class="number">1</span>&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  lis, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;:8888&quot;</span>)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;failed to listen: %v&quot;</span>, err)</span><br><span class="line">  &#125;</span><br><span class="line">  s := grpc.NewServer()</span><br><span class="line">  pb.RegisterDemoServiceServer(s, &amp;server&#123;&#125;)</span><br><span class="line">  reflection.Register(s)</span><br><span class="line">  <span class="keyword">if</span> err := s.Serve(lis); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;failed to serve: %v&quot;</span>, err)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>以上代码启动了一个服务器并监听8888端口，这里面主要的就是要定义一个结构体，上一步通过 <code>Protobuf</code> 生成的代码中会有一个 <code>interface</code>，里面包含 <code>Version</code> 方法，这里定义的结构体需要实现这个接口，这个服务才可以被注册。</p>
+<h2 id="客户端程序"><a href="#客户端程序" class="headerlink" title="客户端程序"></a>客户端程序</h2><p>有了服务的程序，下面我们编写一个客户端程序来连接到服务端进行通信。</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;time&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;golang.org/x/net/context&quot;</span></span><br><span class="line">  <span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">  pb <span class="string">&quot;xxxx/xxxx/demo_service&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 连接到服务器</span></span><br><span class="line">  conn, err := grpc.Dial(<span class="string">&quot;:8888&quot;</span>, grpc.WithInsecure())</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;did not connect: %v&quot;</span>, err)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">defer</span> conn.Close()</span><br><span class="line">  c := pb.NewDemoServiceClient(conn)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 定义请求context</span></span><br><span class="line">  ctx, cancel := context.WithTimeout(context.Background(), time.Second)</span><br><span class="line">  <span class="keyword">defer</span> cancel()</span><br><span class="line">  r, err := c.Version(ctx, &amp;pb.VersionRequest&#123;Name: <span class="string">&quot;demo-service&quot;</span>&#125;)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;Request error: %v&quot;</span>, err)</span><br><span class="line">  &#125;</span><br><span class="line">  log.Printf(<span class="string">&quot;Version: %s&quot;</span>, r.Message)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>上面的代码创建了一个客户端程序，并且连接到服务器，然后调用了 <code>Version</code> 接口获取信息。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>以上为 <code>gRPC</code> 的使用的快速入门，包括使用 <code>Protobuf</code> 来定义RPC服务，然后通过编译器生成 <code>gRPC代码</code>，再然后编写服务端和客户端来实现通信。之后会再真的gRPC使用的一些细节和场景进行介绍。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：gRPC 在 Golang 实践 - 入门</li>
+        <li>本文作者：kenticny</li>
+        <li>创建时间：2017-11-14 22:17:45</li>
+        <li>
+            本文链接：https://luyun.io/2017/11/14/grpc-golang-practice-01/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/gRPC/">#gRPC</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Golang/">#Golang</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2018/03/27/redis-transactions-basic/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">浅谈 Redis 事务特性和使用</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2016/06/12/design-pattern-chain-of-responsibiliy/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">设计模式 —— 责任链模式</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+            
+                
+
+
+  <div class="adsense-unit adsense-unit-article_footer">
+    <ins class="adsbygoogle"
+      data-ad-client="ca-pub-2279937631428525"
+      data-ad-slot="3741741136"
+      data-ad-format="auto"
+      
+      
+      
+      
+      
+      data-full-width-responsive="true"
+      style="display:block;width:100%;min-width:320px;max-width:900px;height:90px;">
+    </ins>
+    <script data-pjax>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+            
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5f5e02832431c7e26875',
+                    clientSecret: '984eb6ac0c0de7669aa83d6d11e3b3c8c1c33c4b',
+                    repo: 'kenticny.github.io',
+                    owner: 'kenticny',
+                    admin: ['kenticny'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">gRPC 在 Golang 实践 - 入门</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1"><span class="nav-text">定义服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%A8%8B%E5%BA%8F"><span class="nav-text">服务端程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A8%8B%E5%BA%8F"><span class="nav-text">客户端程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<a href="/">碎片人生</a>
+            
+            <span class="powered-by-container">&nbsp;&nbsp;Powered by <a target="_blank" href="https://hexo.io">Hexo</a>. </span>
+            <span class="theme-version-container">&nbsp;&nbsp;Theme by <a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.0</a>
+            
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+    
+        <script async data-pjax src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2279937631428525" crossorigin="anonymous"></script>
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?95824cda1ebc32e013f3388e3b0f27e6";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2GZ6RF852"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z2GZ6RF852');
+</script>
+</body>
+</html>

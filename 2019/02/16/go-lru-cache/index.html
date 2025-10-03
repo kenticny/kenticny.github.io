@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="一个有思想的程序员的技术博客,Golang,Node.js,Python,Game,Music,游戏,音乐,历史">
+    <meta name="author" content="kenticny">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://luyun.io/2019/02/16/go-lru-cache/"/>
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <title>
+        
+            Go 实现基于内存的 LRU 缓存 |
+        
+        碎片人生
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/fonts.css">
+
+    
+    <link rel="preconnect" href="https://evan.beee.top" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"luyun.io","root":"/","language":"zh-CN"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"/images/logo.svg","favicon":"/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://evan.beee.top/img/wallhaven-wqery6-light.webp","dark":"https://evan.beee.top/img/wallhaven-wqery6-dark.webp"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"一个有思想的程序员，玩游戏，玩音乐，读历史"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":true},"code_block":{"copy":true,"style":"mac"},"pjax":{"enable":true},"lazyload":{"enable":true},"adsense":{"enable":true,"client":"ca-pub-2279937631428525","units":{"article_footer":{"slot":"3741741136","format":"auto","full_width_responsive":true,"style":{"display":"block","width":"100%","min-width":"320px","max-width":"900px","height":"90px"}}}},"version":"1.1.0","friend_links":{"columns":2}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/css/regular.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                碎片人生
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">Go 实现基于内存的 LRU 缓存</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">kenticny</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2019-02-16 22:39:25</span>
+        <span class="mobile">2019-02-16 22:39</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Golang/">Golang</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Cache/">Cache</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/LRU/">LRU</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>缓存是在平时开发中最常用的中间件之一，尤其是在 WEB 开发中更为常见，大家最常用的肯定还是 Redis 或者 Memcached 之类的中间件。所以对于自己实现一个 Cache 可能并没有那么熟悉，但是在很多场景下，我们使用一些网络缓存会遇到一些瓶颈，比如说传输数据量比较大，或者传输非常频繁，都可能会导致一些性能瓶颈，尤其是在网络I&#x2F;O上。所以这种场景下，很可能就需要我们自己在应用内实现一个二级缓存。本文我们就来介绍下一个基于 Go 语言支持 LRU 淘汰策略缓存的实现思路。</p>
+<h2 id="简单了解-LRU-是什么"><a href="#简单了解-LRU-是什么" class="headerlink" title="简单了解 LRU 是什么"></a>简单了解 LRU 是什么</h2><p>提到 LRU，很多人第一反应会想到 Redis 的淘汰策略，没错，这里的 LRU 和 Redis 使用的 LRU 是相同的概念。</p>
+<p>LRU（Least Recently Used）表示的是最近最久未使用，或者也有称为最近最少使用，但是为了避免和 LFU 产生歧义，本文中我们都成为最近最久未使用。下面我们通过一个示例来快速描述下 LRU 的概念（如果已经对 LRU 的概念了解，可以跳过这部分）：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://resource.service.mkicon.com/resources/v/03702993-ffb8-4b1d-8867-495366d3af52"
+                      alt="LRU介绍"
+                ></p>
+<p>当缓存容量未满时，加入元素则加入到队尾，有元素访问时，则被访问的元素移动到队尾，所以在这个例子中，我们可以认为在队尾的为最近使用的元素，相反在队首的则为最近最久未使用的元素。所以在元素 E 加入后，缓存容量达到最大，此时最近最久未使用的元素为 A，如果再有元素加入时会淘汰掉 A，但是接下来的操作为访问 A 元素，所以此时 A 被移动到队尾，在队首的元素成为了 C，那么接下在 F 元素加入后，C元素被淘汰。</p>
+<h2 id="LRU-机制实现分析"><a href="#LRU-机制实现分析" class="headerlink" title="LRU 机制实现分析"></a>LRU 机制实现分析</h2><p>在了解 LRU 的概念之后，我们回到主题，就是实现一个 LRU 的缓存。这里我们以开始提到的面试为例：</p>
+<blockquote>
+<p>实现基于内存的满足 LRU 淘汰机制的缓存，并且提供 Set 和 Get 方法</p>
+</blockquote>
+<p>首先我们分析下这个题目，要满足 LRU 的淘汰机制，则缓存一定是限定容量的。其次就是要对性能的分析，既然是作为缓存使用的，那么对于 Set 和 Get 的操作的时间复杂度要求一定要控制在 O(1) 级别。（<strong>这里提一个其他问题，我们在解一个问题的时候，一定优先考虑的是最优的实现方式，而不是你认为的最简单的实现方式，这里如果我们使用 O(n) 甚至 O(n^2) 的解法也可以实现，但是这样既不满足实际的使用场景，更不满足面试对你的考核要求</strong>）</p>
+<p>再回到这个问题，从最开始我们分析的例子中可以看出，在 LRU 的实现中最重要的一点就是要管理缓存中每个元素的时间属性，所以有人就会考虑，给每个元素记录一个时间戳，然后将元素和时间戳信息存入到一个哈希表中，但是这样虽然满足了 O(1) 的元素访问时间复杂度，但是在元素淘汰的时候就需要遍历所有元素来找到最早的那个元素。</p>
+<p>所以我们在对这个问题思考的时候，不要对时间这个概念太过于注重，因为我们并不需要知道每个元素的具体时间，而是只需要知道元素之间的先后时间顺序即可。所以这里我们只需要维护每个元素的先后顺序。那么这里有人就会考虑到使用数组或者链表，这两者都是有顺序的。但是对于数组来讲，数组中的元素移动并不是 O(1) 的操作，所以可能链表会更加适合。但是如果使用链表实现的话，要访问缓存中的元素就需要去遍历链表来找到这个元素。</p>
+<p>我们再梳理下这个问题实现的要点：</p>
+<ol>
+<li>Set 和 Get 满足 O(1) 时间复杂度</li>
+<li>元素顺序调整满足 O(1) 时间复杂度</li>
+</ol>
+<p>对于要点1，我们可以使用哈希表来实现，对于要点2，我们可以使用链表来实现。这两种结构都没有办法同时满足两个点。所以我们就需要考虑把这两种数据结构结合起来考虑。（如果有对于Java了解的同学，可以参考LinkedHashMap），这种结构细节可以参考下图：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://resource.service.mkicon.com/resources/v/3188df6e-f694-4f42-9312-eea1cd666636"
+                      alt="LRU结构"
+                ></p>
+<p>首先创建一个哈希表用了存储键值对，然后将哈希表的 Value 进行链表的关联，这样就可以同时满足上述条件了，而这也是 LRU 的最普遍的实现方式。</p>
+<h2 id="Go-实现基于内存的-LRU-缓存"><a href="#Go-实现基于内存的-LRU-缓存" class="headerlink" title="Go 实现基于内存的 LRU 缓存"></a>Go 实现基于内存的 LRU 缓存</h2><p>我们了解了实现方法后，就可以着手来实现一个缓存，首先我们需要先定义出这个缓存的结构：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Cache <span class="keyword">struct</span> &#123;</span><br><span class="line">  mu   sync.Mutex</span><br><span class="line">  mp   <span class="keyword">map</span>[<span class="type">string</span>]*Node</span><br><span class="line">  list *List</span><br><span class="line">  size <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Cache)</span></span> Set(k <span class="type">string</span>, v <span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Cache)</span></span> Get(k <span class="type">string</span>) <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">  Key   <span class="type">string</span></span><br><span class="line">  Val   <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">  next  *Node</span><br><span class="line">  prev  *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">  head *Node</span><br><span class="line">  tail *Node</span><br><span class="line">  <span class="built_in">len</span>  <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span></span> Len() <span class="type">int</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span></span> MoveToBack(n *Node)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span></span> PushBack(n *Node)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span></span> RemoveFront() *Node</span><br></pre></td></tr></table></figure></div>
+
+<p>首先我们定义了 Cache，Node，List 三种结构，其中 List 表示一个双向链表，Node 表示链表中的节点。<strong>这里为什么使用双向链表，因为我们需要的操作是将指定的节点移动到链表最后端，这就需要我们知道一个节点的前置节点和后置节点，所以这里只能使用双向链表。</strong>当然这里也可以使用 Go 标准库提供的 list 对象。这里我们不对链表操作的方法进行实现，大家可以参考标准库的 container&#x2F;list 包。</p>
+<p>接下来我们来看下 Get 方法的实现：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Cache)</span></span> Get(key <span class="type">string</span>) <span class="keyword">interface</span>&#123;&#125; &#123;</span><br><span class="line">  c.mu.Lock()</span><br><span class="line">  <span class="keyword">defer</span> c.mu.Unlock()</span><br><span class="line">  node, ok := c.mp[key]</span><br><span class="line">  <span class="keyword">if</span> !ok &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">  &#125;</span><br><span class="line">  c.list.MoveToBack(node)</span><br><span class="line">  <span class="keyword">return</span> node.Val</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Get 方法实现很简单，就是从 Map 中后去指定 Key 的节点，然后将这个节点移动到链表的最后端，最后将这个节点的值返回即可。</p>
+<p>然后来实现下 Set 方法：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Cache)</span></span> Set(key <span class="type">string</span>, val <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">  c.mu.Lock()</span><br><span class="line">  <span class="keyword">defer</span> c.mu.Unlock()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> existNode, ok := c.mp[key]; ok &#123;</span><br><span class="line">    existNode.Val = val</span><br><span class="line">    c.list.MoveToBack(existNode)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> c.list.Len() &gt;= c.size &#123;</span><br><span class="line">    frontNode := c.list.RemoveFront()</span><br><span class="line">    <span class="built_in">delete</span>(c.mp, frontNode.Key)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  node := Node&#123;</span><br><span class="line">    Key: key,</span><br><span class="line">    Val: val, </span><br><span class="line">  &#125;</span><br><span class="line">  c.list.PushBack(&amp;node)</span><br><span class="line">  c.mp[key] = &amp;node</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Set 方法的实现逻辑为首先检查 Key 在缓存中是否存在，如果存在则更新值并且移动到链表尾端，如果不存在，则先检查缓存容量，如果已经达到最大缓存容量，则将链表头元素删除，并且将这个元素在哈希表中删除，然后将新的节点信息分别添加进链表尾和哈希表中。</p>
+<p>至此，一个基于内存的 LRU 缓存的简单实现就完成了，当然这里没有包括链表操作部分的实现，这里大家可以使用标准库提供的 list 包或者参考其他链表实现步骤。总结一下，LRU 缓存我们通过 Map 来存储 key 和 value 的关系来保证快速访问，然后通过双向链表来控制节点顺序，保证 LRU 淘汰策略。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：Go 实现基于内存的 LRU 缓存</li>
+        <li>本文作者：kenticny</li>
+        <li>创建时间：2019-02-16 22:39:25</li>
+        <li>
+            本文链接：https://luyun.io/2019/02/16/go-lru-cache/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Golang/">#Golang</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Cache/">#Cache</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/LRU/">#LRU</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2020/01/30/golang-operate-http-header-question-detail/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Golang 操作 HTTP Header 的一个小细节</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2018/05/07/compare-git-rebase-and-merge/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Git 中 rebase 和 merge 用法经验谈</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+            
+                
+
+
+  <div class="adsense-unit adsense-unit-article_footer">
+    <ins class="adsbygoogle"
+      data-ad-client="ca-pub-2279937631428525"
+      data-ad-slot="3741741136"
+      data-ad-format="auto"
+      
+      
+      
+      
+      
+      data-full-width-responsive="true"
+      style="display:block;width:100%;min-width:320px;max-width:900px;height:90px;">
+    </ins>
+    <script data-pjax>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+            
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5f5e02832431c7e26875',
+                    clientSecret: '984eb6ac0c0de7669aa83d6d11e3b3c8c1c33c4b',
+                    repo: 'kenticny.github.io',
+                    owner: 'kenticny',
+                    admin: ['kenticny'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Go 实现基于内存的 LRU 缓存</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BA%86%E8%A7%A3-LRU-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">简单了解 LRU 是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LRU-%E6%9C%BA%E5%88%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90"><span class="nav-text">LRU 机制实现分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Go-%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E%E5%86%85%E5%AD%98%E7%9A%84-LRU-%E7%BC%93%E5%AD%98"><span class="nav-text">Go 实现基于内存的 LRU 缓存</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<a href="/">碎片人生</a>
+            
+            <span class="powered-by-container">&nbsp;&nbsp;Powered by <a target="_blank" href="https://hexo.io">Hexo</a>. </span>
+            <span class="theme-version-container">&nbsp;&nbsp;Theme by <a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.0</a>
+            
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+    
+        <script async data-pjax src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2279937631428525" crossorigin="anonymous"></script>
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?95824cda1ebc32e013f3388e3b0f27e6";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2GZ6RF852"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z2GZ6RF852');
+</script>
+</body>
+</html>

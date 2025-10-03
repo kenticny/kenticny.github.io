@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="一个有思想的程序员的技术博客,Golang,Node.js,Python,Game,Music,游戏,音乐,历史">
+    <meta name="author" content="kenticny">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://luyun.io/2015/02/15/node-js-wechat-card-02/"/>
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <title>
+        
+            浅谈微信卡券功能开发（2） |
+        
+        碎片人生
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/fonts.css">
+
+    
+    <link rel="preconnect" href="https://evan.beee.top" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"luyun.io","root":"/","language":"zh-CN"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"/images/logo.svg","favicon":"/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://evan.beee.top/img/wallhaven-wqery6-light.webp","dark":"https://evan.beee.top/img/wallhaven-wqery6-dark.webp"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"一个有思想的程序员，玩游戏，玩音乐，读历史"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":true},"code_block":{"copy":true,"style":"mac"},"pjax":{"enable":true},"lazyload":{"enable":true},"adsense":{"enable":true,"client":"ca-pub-2279937631428525","units":{"article_footer":{"slot":"3741741136","format":"auto","full_width_responsive":true,"style":{"display":"block","width":"100%","min-width":"320px","max-width":"900px","height":"90px"}}}},"version":"1.1.0","friend_links":{"columns":2}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/css/regular.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                碎片人生
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">浅谈微信卡券功能开发（2）</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">kenticny</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2015-02-15 20:21:49</span>
+        <span class="mobile">2015-02-15 20:21</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Node-js/">Node.js</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Wechat/">Wechat</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Wechat-card/">Wechat card</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%BE%AE%E4%BF%A1/">微信</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%8D%A1%E5%88%B8/">微信卡券</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>继续介绍NODEJS开发微信卡券功能，昨天简单演示了微信接口的Access Token的原理和用法，还有门店的添加和查询，今天我们将介绍卡券的创建以及核销的最基本的流程。</p>
+<p>本文将使用NodeJS作为开发语言，以<a class="link"   target="_blank" rel="noopener" href="http://github.com/kenticny/wechat-card" >wechat-card <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，和官方文档为主进行演示。</p>
+<h2 id="创建卡券"><a href="#创建卡券" class="headerlink" title="创建卡券"></a>创建卡券</h2><p>昨天我们已经添加完成门店，接下来我们将要创建卡券。微信的API接口为：</p>
+<pre><code>https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
+</code></pre>
+<p>使用wechat-card module可以按照以下操作：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> card = &#123;</span><br><span class="line">  <span class="attr">card_type</span>: <span class="string">&quot;DISCOUNT&quot;</span>,</span><br><span class="line">  <span class="attr">base_info</span>: &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">special_info</span>: &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">card</span>.<span class="title function_">createCard</span>(card, <span class="keyword">function</span>(<span class="params">err, cardId</span>) &#123;</span><br><span class="line">  <span class="comment">// 创建成功后，返回卡券的ID</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>这里有需要特别说明的</strong>，<code>card_type</code> 为卡券的类型，wechat-card module目前只支持 <code>DISCOUNT(折扣券)</code>, <code>CASH(现金券)</code>, <code>GENERAL_COUPON(普通优惠券)</code>, <code>GIFT(礼品券)</code>, <code>GROUPON(团购券)</code>, <code>LUCK_MONEY(红包)</code>，其他类型的大家可以按照官方文档进行操作。</p>
+<p>卡券的配置参数中，可以分为三个类型的参数，一是 <code>card_type</code>，即卡券类型；二是 <code>base_info</code>，即基本信息，所有类型的卡券都会包含这部分参数，具体的参数请参见wechat-card文档或者官方文档；三是每种类型的卡券特有的参数，wechat-card中将这类参数归为 <code>special_info</code>。</p>
+<p>在base_info中，分为必须参数和可选参数，具体参见文档，这里有几个要<strong>特别说明</strong>的配置字段：</p>
+<ul>
+<li>color</li>
+</ul>
+<p>这个字段来设置卡券的背景颜色，我们要特别说明这个字段的原因是，这里的颜色不是我们可以随意设置的，微信提供了一组颜色代码，我们必须从中选择一个。我们可以通过接口来获取到微信提供的颜色列表：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 微信提供的接口为：https://api.weixin.qq.com/card/getcolors?access_token=TOKEN&lt;br&gt;</span></span><br><span class="line">wxCard.<span class="property">basic</span>.<span class="title function_">getColorList</span>(<span class="keyword">function</span>(<span class="params">err, colors</span>) &#123;</span><br><span class="line">  <span class="comment">// colors 的格式: [&#123;name: &#x27;Color010&#x27;, value: &#x27;#55bd47&#x27; &#125;, ...]</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>use_custom_code</li>
+</ul>
+<p>这个字段用来标明该卡券是否使用自定义CODE。<em><strong>这里我们先提前介绍下Code，我们创建一类卡券，比如我们创建了折扣券，其中包含了100的库存量，即有100个用户可以领取，那么每个人领取到的就是一个Code</strong></em>，然后使用卡券，实质上是使用Code。use_custom_code默认值为false，即不使用自定义Code，当为false时， 每次领取卡券，微信会自动生成一个12位的数字作为Code。如果为true，那么我们在发放卡券的时候就需要自定义Code，这个我们在之后会详述。</p>
+<ul>
+<li>url_name_type</li>
+</ul>
+<p>这个字段不是必须的，他的作用是在卡券界面上添加一个自定义的CELL，和这个字段相配的是 <code>custom_url</code>，这两个字段必须同时出现或者不出现。实现的效果是点击自定义Cell跳转到custom_url的链接。</p>
+<p>在添加卡券成功后，接口返回卡券的ID。</p>
+<h2 id="发放卡券"><a href="#发放卡券" class="headerlink" title="发放卡券"></a>发放卡券</h2><p>在创建完成卡券之后，商户需要发放卡券让用户领取，微信目前提供的发放卡券形式有以下几种：(本文只列举微信公开接口，合作接口使用请自行参照文档)</p>
+<h4 id="二维码"><a href="#二维码" class="headerlink" title="二维码"></a>二维码</h4><p>流程是商户可以通过微信提供的接口生成二维码的Ticket，然后使用Ticket生成二维码，用户通过微信扫描二维码进入卡券领取界面领取卡券。涉及到的接口有：</p>
+<pre><code>// 创建二维码Ticket
+https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
+
+// 使用Ticket生成二维码
+https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET
+</code></pre>
+<p>使用 wechat-card 生成二维码的步骤很简单，只需要一个步骤：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">createCardQRCode</span>(<span class="string">&quot;qz_aAidkesdkncsn_AedfZek&quot;</span>, <span class="keyword">function</span>(<span class="params">err, url</span>) &#123;</span><br><span class="line">  <span class="comment">// url为二维码的URL</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p>在得到二维码后，商户可以通过各种方式来传播二维码，用户通过二维码扫描后，可以跳转到微信卡券领取界面。在 <a class="link"   target="_blank" rel="noopener" href="http://github.com/kenticny/wechat-card" >wechat-card <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> 的生成二维码接口中，还有好多配置选项，比如二维码过期时间，二维码是否唯一有效等等的配置，大家可以参照 <a class="link"   target="_blank" rel="noopener" href="http://github.com/kenticny/wechat-card" >wechat-card <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> 文档或者官方文档。</p>
+<h4 id="JSAPI"><a href="#JSAPI" class="headerlink" title="JSAPI"></a>JSAPI</h4><p>这里使用微信内置浏览器的JSAPI跳转到微信卡券的领取界面，由于JSAPI方式设计前端内容较多，所以本文不详述，只介绍几个需要注意的信息，在后续的文章中，会有单独介绍JSAPI各种操作。</p>
+<p>在使用JSAPI发放卡券时，使用的时batchAddCard接口，在这个接口需要提交卡券ID和卡券信息，在卡券信息中有个配置项为Signature（签名），这个签名是需要计算的，具体的计算方式为：</p>
+<p>将 <code>api_ticket</code>、<code>timestamp</code>、<code>card_id</code>、<code>code</code>、<code>openid</code>、<code>balance</code> 的value值进行字符串的字典序排序，然后将排序后的字符串连接为一个字符串，进行sha1加密。</p>
+<p>用JS代码来介绍上面的概念：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="title class_">Array</span>(api_ticket, timestamp, card_id, code, openid, balance);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 转为字符串</span></span><br><span class="line">arr = arr.<span class="title function_">map</span>(<span class="keyword">function</span>(<span class="params">n</span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> n.<span class="title function_">toString</span>();</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 字典序排序</span></span><br><span class="line">arr = arr.<span class="title function_">sort</span>();</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 拼接为字符串</span></span><br><span class="line"><span class="keyword">var</span> str = arr.<span class="title function_">join</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 进行SHA1加密，sha1算法需自行实现</span></span><br><span class="line"><span class="keyword">var</span> signature = <span class="title function_">sha1</span>(str);</span><br></pre></td></tr></table></figure></div>
+
+<p>在 wechat-card 中也提供了计算签名的方法：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = [<span class="string">&#x27;ApiTicket&#x27;</span>, <span class="string">&#x27;CardId&#x27;</span>, <span class="string">&#x27;timestamp&#x27;</span>];</span><br><span class="line">wxCard.<span class="property">basic</span>.<span class="title function_">getSignature</span>(data, <span class="keyword">function</span>(<span class="params">err, signature</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p>这里有需要注意的几点：</p>
+<ul>
+<li><p><code>api_ticket</code> 这个字段为微信卡券API V1.9时新增的内容，其原理和access_token类似：7200秒过期，请求次数有限制。不过不同的是：<em><strong>pi_ticket微信会做刷新，也就是说我们在有效期内请求api_ticket，结果都是一样的。所以我们需要和微信接口进行时间对齐，即7200秒进行请求更新我们自己管理的ticket。</strong></em>（有问题？如果在好多不可控因素下导致时间误差怎么办？微信的结论是他们会在一定的时间范围内进行容错处理，所以这个问题应该就可以忽视了。）</p>
+</li>
+<li><p><code>timestamp</code> 这个字段是一个时间戳（单位为秒）。需要注意的是，在提交卡券信息时里面也有一个时间戳，<strong>要求卡券信息中的时间戳和Signature中的时间戳必须一致。</strong></p>
+</li>
+<li><p><code>code</code>, <code>openid</code>, <code>balance</code> 都是可选字段，需要在某种场合下才是必填选项，详细请参见文档。</p>
+</li>
+</ul>
+<h2 id="核销卡券"><a href="#核销卡券" class="headerlink" title="核销卡券"></a>核销卡券</h2><p>领取完卡券后，下一步是使用，对于商户来说就是核销。在微信卡券中，核销卡券的唯一途径就是消耗Code（Code概念请参照上文）。</p>
+<pre><code>https://api.weixin.qq.com/card/code/consume?access_token=TOKEN
+</code></pre>
+<p>在wechat-card中，消耗Code的方法如下：</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的code仅用于demo，实际中不存在</span></span><br><span class="line"><span class="keyword">var</span> code = <span class="string">&quot;882077290937&quot;</span>;</span><br><span class="line"> </span><br><span class="line">wxCard.<span class="property">code</span>.<span class="title function_">consumeCode</span>(code, <span class="keyword">function</span>(<span class="params">err, consumeInfo</span>) &#123;</span><br><span class="line">  <span class="comment">// do something ...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></div>
+
+<p>PS: Code从哪里来？</p>
+<ul>
+<li><p>领取卡券后，可以在微信卡包中找到卡券，在卡券上会有一个二维码，或者一串数字，或者两者都有，或者一维码等等的形式（详见卡券的code_type配置）。那么那串数字就是Code，或者扫描二维码的结果就是Code。</p>
+</li>
+<li><p>如果使用JSAPI拉起卡券列表，在选取卡券后会得到一个加密的Code，使用decryptCode方法可以进行解码得到真实Code，详见文档。这里就不做演示了。</p>
+</li>
+</ul>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>至此，一个从卡券创建到使用卡券的简单流程就介绍完成了。之后的文章将会针对卡券的管理以及其他的功能进行介绍，希望大家关注。最后，提前祝大家新年快乐！！;)</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：浅谈微信卡券功能开发（2）</li>
+        <li>本文作者：kenticny</li>
+        <li>创建时间：2015-02-15 20:21:49</li>
+        <li>
+            本文链接：https://luyun.io/2015/02/15/node-js-wechat-card-02/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Node-js/">#Node.js</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Wechat/">#Wechat</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Wechat-card/">#Wechat card</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%BE%AE%E4%BF%A1/">#微信</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%8D%A1%E5%88%B8/">#微信卡券</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2015/03/12/node-js-wechat-card-03/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">浅谈微信卡券功能开发（3）</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2015/02/11/node-js-wechat-card-01/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">浅谈微信卡券功能开发（1）</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+            
+                
+
+
+  <div class="adsense-unit adsense-unit-article_footer">
+    <ins class="adsbygoogle"
+      data-ad-client="ca-pub-2279937631428525"
+      data-ad-slot="3741741136"
+      data-ad-format="auto"
+      
+      
+      
+      
+      
+      data-full-width-responsive="true"
+      style="display:block;width:100%;min-width:320px;max-width:900px;height:90px;">
+    </ins>
+    <script data-pjax>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+            
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5f5e02832431c7e26875',
+                    clientSecret: '984eb6ac0c0de7669aa83d6d11e3b3c8c1c33c4b',
+                    repo: 'kenticny.github.io',
+                    owner: 'kenticny',
+                    admin: ['kenticny'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">浅谈微信卡券功能开发（2）</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%8D%A1%E5%88%B8"><span class="nav-text">创建卡券</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E6%94%BE%E5%8D%A1%E5%88%B8"><span class="nav-text">发放卡券</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E7%A0%81"><span class="nav-text">二维码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSAPI"><span class="nav-text">JSAPI</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E9%94%80%E5%8D%A1%E5%88%B8"><span class="nav-text">核销卡券</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<a href="/">碎片人生</a>
+            
+            <span class="powered-by-container">&nbsp;&nbsp;Powered by <a target="_blank" href="https://hexo.io">Hexo</a>. </span>
+            <span class="theme-version-container">&nbsp;&nbsp;Theme by <a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.0</a>
+            
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+    
+        <script async data-pjax src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2279937631428525" crossorigin="anonymous"></script>
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?95824cda1ebc32e013f3388e3b0f27e6";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2GZ6RF852"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z2GZ6RF852');
+</script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="一个有思想的程序员的技术博客,Golang,Node.js,Python,Game,Music,游戏,音乐,历史">
+    <meta name="author" content="kenticny">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://luyun.io/2018/05/07/compare-git-rebase-and-merge/"/>
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <title>
+        
+            Git 中 rebase 和 merge 用法经验谈 |
+        
+        碎片人生
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/fonts.css">
+
+    
+    <link rel="preconnect" href="https://evan.beee.top" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"luyun.io","root":"/","language":"zh-CN"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"/images/logo.svg","favicon":"/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://evan.beee.top/img/wallhaven-wqery6-light.webp","dark":"https://evan.beee.top/img/wallhaven-wqery6-dark.webp"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"一个有思想的程序员，玩游戏，玩音乐，读历史"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":true},"code_block":{"copy":true,"style":"mac"},"pjax":{"enable":true},"lazyload":{"enable":true},"adsense":{"enable":true,"client":"ca-pub-2279937631428525","units":{"article_footer":{"slot":"3741741136","format":"auto","full_width_responsive":true,"style":{"display":"block","width":"100%","min-width":"320px","max-width":"900px","height":"90px"}}}},"version":"1.1.0","friend_links":{"columns":2}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/css/regular.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                碎片人生
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">Git 中 rebase 和 merge 用法经验谈</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">kenticny</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2018-05-07 17:40:57</span>
+        <span class="mobile">2018-05-07 17:40</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Git/">Git</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Merge/">Merge</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Rebase/">Rebase</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>Git 作为一个开发的基础工具，使用方法应该是每一个开发者必备的技能。由于 Git 的功能过于强大，导致很多人的使用方法都不是一样的，而且每个公司或者每个团队都有可能在日常工作中形成自己特有的 Git 管理流程，这些都是根据自己团队的特点和工作方式制定的，并没有孰优孰劣之分，毕竟是工具，能够有效的帮助完成自己的任务才是最重要的。</p>
+<p>要了解 Git 命令功能的最简单的方法就是 git –help，这里我就不禁又要插一句闲话了，关于 Git 工具是使用命令行，还是使用GUI，这个问题就像“豆腐脑是咸的好还是甜的好”一样，之前还看过一个视频推荐大家使用GUI，然后各种列举命令行的劣势。我个人觉得这个大可不必，作为一个工具，每个人要选择自己最合适的方式使用，千万不要存在鄙视链，就像代码编辑器一样，有人喜欢用IDE，有人喜欢vim&#x2F;emacs，不存在谁比谁更高级的说法，只要能最高效的完成工作就可以了。但是有一点：<strong>如果你还不了解 Git 命令具体功能的时候，最好不要使用封装度过高的GUI工具</strong>。因为这很容易让初学者误解 Git 的工作流程。</p>
+<h3 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h3><p>通过 <code>git --help</code> 可以了解到两个命令的功能：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git --<span class="built_in">help</span></span></span><br><span class="line">...</span><br><span class="line">merge      Join two or more development histories together</span><br><span class="line">rebase     Reapply commits on top of another base tip</span><br><span class="line">...</span><br></pre></td></tr></table></figure></div>
+
+<p>很明显，两个命令的功能是不一样的，merge 的重点在于将 commit 合并，rebase 的重点在于重新设置base点。这两个命令的具体流程我们这里就不浪费篇幅说了，大家可以通过 git 的 help 文档来看，也可以随便百度一片文章，基本都会有那几张介绍流程的图片的。如果有不熟悉的可以先去简单了解一下。</p>
+<p>很多关于 rebase 和 merge 相关的文章都会对这两个命令做比较，而且也有很多带节奏的人总会说要使用 rebase 而不要使用 merge，原因竟然是 rebase 的提交记录线很流畅，看着舒服，而 merge 会产生一个额外的合并 commit，有强迫症的人看了会不舒服。（WTF???）</p>
+<p>这里我需要好好的杠一下，首先，使提交记录看起来流畅明了确实是 rebase 命令的一个特点，但是这绝对不应该是我们使用它的原因。关于 merge 操作产生合并 commit 的问题，我们从下面几个问题讨论下：</p>
+<h4 id="merge-一定会产生一个合并的commit吗？"><a href="#merge-一定会产生一个合并的commit吗？" class="headerlink" title="merge 一定会产生一个合并的commit吗？"></a>merge 一定会产生一个合并的commit吗？</h4><p>相信大多数人肯定都遇到过，合并之后没有产生合并 commit 的情况，所以 merge 操作并不是一定产生一个新的 commit，那么什么时候会产生新的 commit 呢？这里需要介绍一个概念，fast-forward（快进模式），如果从 A 分支上出 B 分支，然后在 B 分支上工作，然后将 B 分支合并入 A 分支，如果此时 A 分支任然停留在出 B 分支时的状态，即没有新的 commit 加入，那么此时 B 合并入 A 会议快进模式合并，即不产生新的合并 commit。</p>
+<h4 id="merge-产生-commit-真的不好吗？"><a href="#merge-产生-commit-真的不好吗？" class="headerlink" title="merge 产生 commit 真的不好吗？"></a>merge 产生 commit 真的不好吗？</h4><p>这里我只想说我的观点。git log 是开发者操作 git 的日志记录，也就是说每一条 log 都是有意义的，每一条 log 都可以追踪到一个操作，比如合并产生的 commit，就是记录了这里是一个合并操作。其实有很多团队的 Git 管理流程里面是要求开发者在提交的时候加 –no-ff 参数的，也就是要求在合并时必须要写清楚合并的内容；在 GitHub 或者 GitLab 中，大多数多人维护的项目也都是通过 PR 或者 MR 来合并的。而且合并分支的回滚也是通过 merge 的 commit 来进行操作的，所以说在很多情况下 merge 产生的 commit 是十分必要的。</p>
+<h4 id="这么说-merge-在任何情况下也不会有问题吗？"><a href="#这么说-merge-在任何情况下也不会有问题吗？" class="headerlink" title="这么说 merge 在任何情况下也不会有问题吗？"></a>这么说 merge 在任何情况下也不会有问题吗？</h4><p>能有时候，有一些 merge commit 是可以避免的：比如在本地的分支 A 上开发完成后，要 push 到远端，然后发现远端已经有新的 commit 加入了，那么这是如果 pull 操作，则会产生一个本地合并远端的 commit。如果在本地 A 提交之前 pull 远端 A，那么这个 commit 是可以避免产生的，这也就是 rebase 这个命令的作用了。</p>
+<p>还有就是跨分支合并的时候也会有问题：比如从 A 分支处 B 分支，然后在 B 分支上开发后，又在 B 分支上出 C 分支，C 分支开发完成后，如果优先于 B 分支合并到 A 分支，那么这时候其实就是把不属于 C 分支的内容合并到 A 分支了，此时也可能会出现问题。</p>
+<h3 id="Rebase-出现"><a href="#Rebase-出现" class="headerlink" title="Rebase 出现"></a>Rebase 出现</h3><p>首先我们看这个命令叫 rebase，根据英文语法，re开头的单词一般都表示“重新…”；那么如果要 rebase，首先得知道 base 是什么。我们可以简单的理解为：在 A 分支的 commit1 处出的分支 B，那么 B 就是 base  A 分支的 commit1 产生的分支。</p>
+<p>下面我们简单了解下 rebase 的工作原理，假设我们现有 A, B 两分支，当前在 B 分支上，当我们执行 git rebase A 时，git 做了什么呢？</p>
+<ol>
+<li>git 会以 A 分支为基础，然后将 B 分支上和 A 分支有差异的 commit 一个接一个的合并到 A 分支上。</li>
+<li>在 rebase 过程中，由于 B 分支上的 commit 是重新合并到 A 分支上的，所以 rebase 后的 commit ID 是重新生成了，跟合并前的 commit ID 是不同的。</li>
+</ol>
+<p>了解了工作原理之后，我们可以上面 merge 可能存在的问题用 rebase 怎么解决。假设在本地分支 A 开发完成提交以后，push 时发现远程分支已经领先，那么这里我们可以在本地分支执行 git pull –rebase，这条命令等同于 git fetch &amp;&amp; git rebase，此时就不会产生那条合并的 commit 了。</p>
+<h4 id="rebase-可以解决一切问题吗？"><a href="#rebase-可以解决一切问题吗？" class="headerlink" title="rebase 可以解决一切问题吗？"></a>rebase 可以解决一切问题吗？</h4><p>正如我们上面提到的，任何事物都有两面性，能够剔除掉一些无实际意义的 commit，这是rebase 最明显的一个特点，但是 rebase 要想完全替代 merge，我个人任务这也是十分不现实的事情。从上面提到的 rebase 的工作原理中提到了，rebase 会将目标分支上的 commit 一个接一个的合并到 base 分支上，这里就有一个有趣的问题，在 B 分支上执行 git rebase A，假设此时 A 上有新的改动，而且 B 分支上也对相同位置做了改动，那么就会产生冲突，由于 rebase 会每个 commit 单独进行合并，那么也就是说需要每个commit 分别解决冲突，加入 B 分支上有10个 commit 都改了这个地方，那么就需要解决10次冲突了….想想有点可怕。</p>
+<p>那么对于 rebase 的使用场景，我个人的习惯是，在本地分支同步远程分支时使用 rebase；在本地分支的 base 分支有改动的情况下，使用 rebase 进行同步分支。其余情况，使用 merge 进行合并。</p>
+<p>最后有一点需要特别注意，<strong>如果当前分支存在基于这个分支的子分支，那么千万不要对这个分支进行rebase</strong>，为什么？我举一个简单的栗子！你出门买菜，回来发现家搬走了….所以为了避免这种情况，通常建议工作分支要基于锁定的分支出，这样就可以避免你的分支到时候找不到家了。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：Git 中 rebase 和 merge 用法经验谈</li>
+        <li>本文作者：kenticny</li>
+        <li>创建时间：2018-05-07 17:40:57</li>
+        <li>
+            本文链接：https://luyun.io/2018/05/07/compare-git-rebase-and-merge/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Git/">#Git</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Merge/">#Merge</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Rebase/">#Rebase</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2019/02/16/go-lru-cache/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Go 实现基于内存的 LRU 缓存</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2018/04/05/redis-transactions-sourcecode/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">从源码分析 Redis 事务原理</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+            
+                
+
+
+  <div class="adsense-unit adsense-unit-article_footer">
+    <ins class="adsbygoogle"
+      data-ad-client="ca-pub-2279937631428525"
+      data-ad-slot="3741741136"
+      data-ad-format="auto"
+      
+      
+      
+      
+      
+      data-full-width-responsive="true"
+      style="display:block;width:100%;min-width:320px;max-width:900px;height:90px;">
+    </ins>
+    <script data-pjax>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+            
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5f5e02832431c7e26875',
+                    clientSecret: '984eb6ac0c0de7669aa83d6d11e3b3c8c1c33c4b',
+                    repo: 'kenticny.github.io',
+                    owner: 'kenticny',
+                    admin: ['kenticny'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Git 中 rebase 和 merge 用法经验谈</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94%E8%BE%83"><span class="nav-text">比较</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#merge-%E4%B8%80%E5%AE%9A%E4%BC%9A%E4%BA%A7%E7%94%9F%E4%B8%80%E4%B8%AA%E5%90%88%E5%B9%B6%E7%9A%84commit%E5%90%97%EF%BC%9F"><span class="nav-text">merge 一定会产生一个合并的commit吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#merge-%E4%BA%A7%E7%94%9F-commit-%E7%9C%9F%E7%9A%84%E4%B8%8D%E5%A5%BD%E5%90%97%EF%BC%9F"><span class="nav-text">merge 产生 commit 真的不好吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%99%E4%B9%88%E8%AF%B4-merge-%E5%9C%A8%E4%BB%BB%E4%BD%95%E6%83%85%E5%86%B5%E4%B8%8B%E4%B9%9F%E4%B8%8D%E4%BC%9A%E6%9C%89%E9%97%AE%E9%A2%98%E5%90%97%EF%BC%9F"><span class="nav-text">这么说 merge 在任何情况下也不会有问题吗？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rebase-%E5%87%BA%E7%8E%B0"><span class="nav-text">Rebase 出现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rebase-%E5%8F%AF%E4%BB%A5%E8%A7%A3%E5%86%B3%E4%B8%80%E5%88%87%E9%97%AE%E9%A2%98%E5%90%97%EF%BC%9F"><span class="nav-text">rebase 可以解决一切问题吗？</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<a href="/">碎片人生</a>
+            
+            <span class="powered-by-container">&nbsp;&nbsp;Powered by <a target="_blank" href="https://hexo.io">Hexo</a>. </span>
+            <span class="theme-version-container">&nbsp;&nbsp;Theme by <a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.0</a>
+            
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+    
+        <script async data-pjax src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2279937631428525" crossorigin="anonymous"></script>
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?95824cda1ebc32e013f3388e3b0f27e6";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2GZ6RF852"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z2GZ6RF852');
+</script>
+</body>
+</html>

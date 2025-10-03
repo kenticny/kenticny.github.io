@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="一个有思想的程序员的技术博客,Golang,Node.js,Python,Game,Music,游戏,音乐,历史">
+    <meta name="author" content="kenticny">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://luyun.io/2021/09/14/go-mod-compatibility-function/"/>
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <title>
+        
+            Go 模块开发函数兼容性保证 |
+        
+        碎片人生
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/fonts.css">
+
+    
+    <link rel="preconnect" href="https://evan.beee.top" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"luyun.io","root":"/","language":"zh-CN"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"/images/logo.svg","favicon":"/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://evan.beee.top/img/wallhaven-wqery6-light.webp","dark":"https://evan.beee.top/img/wallhaven-wqery6-dark.webp"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"一个有思想的程序员，玩游戏，玩音乐，读历史"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":true},"code_block":{"copy":true,"style":"mac"},"pjax":{"enable":true},"lazyload":{"enable":true},"adsense":{"enable":true,"client":"ca-pub-2279937631428525","units":{"article_footer":{"slot":"3741741136","format":"auto","full_width_responsive":true,"style":{"display":"block","width":"100%","min-width":"320px","max-width":"900px","height":"90px"}}}},"version":"1.1.0","friend_links":{"columns":2}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/css/regular.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                碎片人生
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">Go 模块开发函数兼容性保证</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">kenticny</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2021-09-14 00:44:33</span>
+        <span class="mobile">2021-09-14 00:44</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Golang/">Golang</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/">模块开发</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%B7%A5%E7%A8%8B/">工程</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%85%BC%E5%AE%B9%E6%80%A7/">兼容性</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>在平时开发中，尤其是在开发 Go 模块的时候，我们需要对于已经公开的结构体，变量，函数，接口等类型进行兼容性的考虑，我们要给函数增加参数时，如果我们直接在原有方法中增加参数，这样会有什么问题吗？这样修改本身并没有什么问题，但是如果这样修改的话，如果调用方把这个模块更新到最新版本以后，那么就会出现编译失败的问题：因为函数的参数数量变化了。</p>
+<p>有人会说，这个问题调用方改动一下不就没有问题了么。虽然是这样，但是对于开发者来讲，在开发一个公开使用的模块时，如果不考虑兼容性，那么对于用户来讲很可能造成极差的体验。所以今天我们就讨论一下 Go 开发时对于兼容性的一些实践。</p>
+<h2 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h2><p>本文主要针对 Go 模块开发时常见一些兼容性问题进行讨论，本文列举的一些原则和实践有借鉴 Go 标准库的一些实现方式。大家也可以自行到 Go 标准库源码中发掘实际的实现方法。本文主要对函数的兼容性进行讨论。</p>
+<h2 id="函数增加参数"><a href="#函数增加参数" class="headerlink" title="函数增加参数"></a>函数增加参数</h2><p>我们最开始提到的例子，就是典型的函数兼容性的问题：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原有的函数签名</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Save</span><span class="params">(b []<span class="type">byte</span>)</span></span> <span class="type">error</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 更新以后的函数签名</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Save</span><span class="params">(b []<span class="type">byte</span>, allowEmpty <span class="type">bool</span>)</span></span> <span class="type">error</span></span><br></pre></td></tr></table></figure></div>
+
+<p>我们以函数增加参数的场景为例，有很多人会想到使用可变参数的方式来增加新参数，方法如下：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Save</span><span class="params">(b []<span class="type">byte</span>, allowEmpty ...<span class="type">bool</span>)</span></span> <span class="type">error</span></span><br></pre></td></tr></table></figure></div>
+
+<p>这种方式在绝大部分场景下是可行的，为什么说是绝大部分场景呢，我们看下面的例子：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> copyFunc <span class="function"><span class="keyword">func</span><span class="params">(b []<span class="type">byte</span>)</span></span> <span class="type">error</span> = Save</span><br></pre></td></tr></table></figure></div>
+
+<p>这里声明一个新的函数变量，然后将Save方法赋值给变量，那么这时候如果函数签名发生变化，这里的赋值就不成立了。所以我们一定要注意，<strong>不要修改函数签名</strong>。</p>
+<p>那么如果我们有需要添加函数的需求的时候，采用添加新函数的方式可能是更合适的方案。</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Save</span><span class="params">(b []<span class="type">byte</span>)</span></span> <span class="type">error</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SaveUpsert</span><span class="params">(b []<span class="type">byte</span>, allowEmpty <span class="type">bool</span>)</span></span> <span class="type">error</span></span><br></pre></td></tr></table></figure></div>
+
+<p>上述方法定义一个新的函数，既满足了新的需求，而且不影响原有的实现。</p>
+<p>其实在 Go 标准库中也有类似的实现，如果大家有 database&#x2F;sql 使用经验的话，就会发现，在这个库中的函数签名很多是这样的：<br><img src="https://resource.service.mkicon.com/resources/v/9d1ba0fc-1d95-477b-b1f5-207ed1038d00" alt="database/sql函数前面"></p>
+<p>可以看到，这里的函数很多都是区分带Context和不带Context的函数，这里就是因为在 context 包引入以后，Go 团队为了考虑模块的兼容性，所以使用了这种方式。</p>
+<h2 id="函数配置信息"><a href="#函数配置信息" class="headerlink" title="函数配置信息"></a>函数配置信息</h2><p>上面提到的方法在我们对函数改动比较少的时候，是比较好的方法，但是如果我们对于函数的改动较多较频繁，比如我们假设每周一个版本都是增加参数的，如果我们每次都增加一个新函数，那么可能一段时间之后这个模块基本就没办法维护了。所以我们需要用另一种方法来应对这个场景。</p>
+<p>通常我们可以给函数增加一个配置信息的结构体：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Options <span class="keyword">struct</span> &#123;</span><br><span class="line">	AllowEmpty <span class="type">bool</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Save</span><span class="params">(b []<span class="type">byte</span>, opt *Options)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> !opt.AllowEmpty &amp;&amp; <span class="built_in">len</span>(b) == <span class="number">0</span> &#123;</span><br><span class="line">  	<span class="keyword">return</span> errors.New(<span class="string">&quot;empty buffer&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> save(b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这样的话如果我们需要增加其他的配置项，只需要在结构体中增加新的字段就可以，不会影响函数签名，只要我们使用恰当，就可以保证兼容性。</p>
+<p>那么这种方法在使用时需要注意哪些呢？首先要考虑默认值的问题，结构体的特点就是可以设置全部的值，也可以只设置部分值，而且在 Go 语言中所有类型都是有默认值的，所以我们要考虑到如果没有设置的字段，默认值是否会对兼容性产生影响。这里我们举一个的例子：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Options <span class="keyword">struct</span> &#123;</span><br><span class="line">	AllowEmpty   <span class="type">bool</span></span><br><span class="line">	Default      []<span class="type">byte</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Save</span><span class="params">(b []<span class="type">byte</span>, opt *Options)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> opt.AllowEmpty &amp;&amp; <span class="built_in">len</span>(b) == <span class="number">0</span> &#123;</span><br><span class="line">  	<span class="keyword">return</span> save(opt.Default)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> save(b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这里 Save 函数之前只有 AllowEmpty 字段，如果这个字段为 false 时，则返回一个 error；然后我们在配置结构体中加入一个新的字段 Default，并且修改逻辑如果 AllowEmpty 为 false 时，则保存默认值 Default。</p>
+<p>我们可以发现，这种不兼容的问题会更加隐蔽，因为上面我们修改函数签名的方式，用户可以在编译时第一时间发现这个问题，但是我们这个场景用户没办法在第一时间发现，甚至有可能在发现的时候已经造成了很大的影响了。所以我们在使用这种方式时，一定要对逻辑和默认值进行检查。</p>
+<p>除此之外，我们还要注意一个很重要的点，<strong>配置结构体中字段只能够增加不能够修改或删除</strong>。否则我们就没办法保证函数的兼容性了。</p>
+<h2 id="可变函数配置类型"><a href="#可变函数配置类型" class="headerlink" title="可变函数配置类型"></a>可变函数配置类型</h2><p>除了上述增加配置结构体的方法，相信大家有开发经验的肯定还见过另一种增加函数配置的方法，就是在 GRPC 中使用的配置参数：是通过定义一个配置类型，然后将这个类型以可变参数的形式传入函数中：</p>
+<div class="highlight-container" data-rel="Go"><figure class="iseeu highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grpc.Dial(address,</span><br><span class="line">  grpc.WithInsecure(),</span><br><span class="line">  grpc.WithTransportCredentials(creds),</span><br><span class="line">  grpc.WithMaxDelay(time.Second),</span><br><span class="line">  grpc.WithBlock())</span><br></pre></td></tr></table></figure></div>
+
+<p>GRPC 中定义了一个 DialOption 接口类型，将各种配置定义成一个返回值为 DialOption 的函数，然后将通过可变参数的形式传入的 Dial 中。至于 DialOption 的实现，这里不做过多描述，大家有兴趣的可以自行到 GRPC 中查看源码，或者以后再单独对这部分进行详细说明。</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>今天我们这里整理了三种常见的对于函数兼容性保证的方法。对于这些方法有几点是一定要注意的：</p>
+<ol>
+<li>不要修改函数签名</li>
+<li>不要删除和修改已有信息，尽可能通过增加新的内容保证兼容。</li>
+</ol>
+<p>除了对于函数的兼容性保证之外，我们在开发中还有其他的兼容性问题，我们会在之后再和大家一起讨论。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：Go 模块开发函数兼容性保证</li>
+        <li>本文作者：kenticny</li>
+        <li>创建时间：2021-09-14 00:44:33</li>
+        <li>
+            本文链接：https://luyun.io/2021/09/14/go-mod-compatibility-function/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Golang/">#Golang</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/">#模块开发</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%B7%A5%E7%A8%8B/">#工程</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%85%BC%E5%AE%B9%E6%80%A7/">#兼容性</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2021/09/18/go-mod-compatibility-struct/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Go 结构体兼容性实践</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2020/09/29/feature-toggle-overview/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Unleash 入门</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+            
+                
+
+
+  <div class="adsense-unit adsense-unit-article_footer">
+    <ins class="adsbygoogle"
+      data-ad-client="ca-pub-2279937631428525"
+      data-ad-slot="3741741136"
+      data-ad-format="auto"
+      
+      
+      
+      
+      
+      data-full-width-responsive="true"
+      style="display:block;width:100%;min-width:320px;max-width:900px;height:90px;">
+    </ins>
+    <script data-pjax>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+            
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5f5e02832431c7e26875',
+                    clientSecret: '984eb6ac0c0de7669aa83d6d11e3b3c8c1c33c4b',
+                    repo: 'kenticny.github.io',
+                    owner: 'kenticny',
+                    admin: ['kenticny'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Go 模块开发函数兼容性保证</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E8%AF%BB"><span class="nav-text">导读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%A2%9E%E5%8A%A0%E5%8F%82%E6%95%B0"><span class="nav-text">函数增加参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-text">函数配置信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0%E9%85%8D%E7%BD%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">可变函数配置类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E5%B0%BE"><span class="nav-text">结尾</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<a href="/">碎片人生</a>
+            
+            <span class="powered-by-container">&nbsp;&nbsp;Powered by <a target="_blank" href="https://hexo.io">Hexo</a>. </span>
+            <span class="theme-version-container">&nbsp;&nbsp;Theme by <a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.0</a>
+            
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+    
+        <script async data-pjax src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2279937631428525" crossorigin="anonymous"></script>
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?95824cda1ebc32e013f3388e3b0f27e6";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2GZ6RF852"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z2GZ6RF852');
+</script>
+</body>
+</html>

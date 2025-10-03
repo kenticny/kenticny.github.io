@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="一个有思想的程序员的技术博客,Golang,Node.js,Python,Game,Music,游戏,音乐,历史">
+    <meta name="author" content="kenticny">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://luyun.io/2020/09/29/feature-toggle-overview/"/>
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <title>
+        
+            Unleash 入门 |
+        
+        碎片人生
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/css/fonts.css">
+
+    
+    <link rel="preconnect" href="https://evan.beee.top" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"luyun.io","root":"/","language":"zh-CN"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"/images/logo.svg","favicon":"/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://evan.beee.top/img/wallhaven-wqery6-light.webp","dark":"https://evan.beee.top/img/wallhaven-wqery6-dark.webp"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"一个有思想的程序员，玩游戏，玩音乐，读历史"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":true},"code_block":{"copy":true,"style":"mac"},"pjax":{"enable":true},"lazyload":{"enable":true},"adsense":{"enable":true,"client":"ca-pub-2279937631428525","units":{"article_footer":{"slot":"3741741136","format":"auto","full_width_responsive":true,"style":{"display":"block","width":"100%","min-width":"320px","max-width":"900px","height":"90px"}}}},"version":"1.1.0","friend_links":{"columns":2}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/css/regular.min.css">
+
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                碎片人生
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">Unleash 入门</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">kenticny</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2020-09-29 23:57:18</span>
+        <span class="mobile">2020-09-29 23:57</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        &gt; <a href="/categories/%E6%8A%80%E6%9C%AF/%E5%85%A5%E9%97%A8/">入门</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD/">基础设施</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Unleash/">Unleash</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Feature-Toggle/">Feature Toggle</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%85%A5%E9%97%A8/">入门</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>最近由于需要对项目内的功能启用进行动态控制，所以了解到了 Feature Toggle，由于之前并没有想过的使用经验，所以进行了一些调研，并且最终选定使用开源方案 Unleash。本文将针对 Feature Toggle 的思想、基本原理和对于 Unleash 的基本使用方法和常见进行简单的描述。</p>
+<h2 id="Feature-Toggle-简介"><a href="#Feature-Toggle-简介" class="headerlink" title="Feature Toggle 简介"></a>Feature Toggle 简介</h2><p>首先我们先简单介绍下 Feature Toggle，顾名思义就是表示 Feature 的开关，通常可以使用 Feature Toggle 来管理不同功能开关，并且可以根据不同的参数对开关进行动态配置。在项目中引入 Feature Toggle 可以更好的对于功能进行灰度发布和定向测试。</p>
+<p>另外我们也可以使用 Feature Toggle 进行权限控制场景，比如我们有一些特殊功能，只想对指定的部分用户开发，而其他用户则不能访问到这些功能，那么我们可以在 Feature Toggle 中增加一个用户列表的策略，然后用户在访问时可以检查是否在这个列表中，如果存在则可以访问，否则无法访问。</p>
+<p>对于 Feature Toggle 的使用场景，我们简单归结为以下几类：</p>
+<ol>
+<li>A&#x2F;B测试</li>
+<li>灰度功能</li>
+<li>功能开关</li>
+<li>权限控制</li>
+</ol>
+<h2 id="Feature-Toggle-实现原理"><a href="#Feature-Toggle-实现原理" class="headerlink" title="Feature Toggle 实现原理"></a>Feature Toggle 实现原理</h2><p>其实从本质上来讲，Feature Toggle的实现原理非常简单，甚至我们在平时都会很常用到，只是我们没有这个概念罢了。</p>
+<p>简单说就是一组配置信息。比如最简单的开关功能，可以在项目配置文件中增加一个 Boolean 类型的配置项，然后在应用中检查这个配置项，如果为 true 则认为开关打开，反之则认为开关关闭。这就是最简单的 Feature Toggle。</p>
+<p>而对于一些相对成熟的 Feature Toggle 设施来说，还会包含更多类型的开关，比如按照用户ID进行划分，这种的本质就是在配置文件中增加一个白名单，然后检查用户是否在白名单中；再比如按照用户请求IP进行过滤，按照随机百分比进行过滤等等。</p>
+<h2 id="为什么要使用-Feature-Toggle"><a href="#为什么要使用-Feature-Toggle" class="headerlink" title="为什么要使用 Feature Toggle"></a>为什么要使用 Feature Toggle</h2><p>那么这里有人肯定会有疑问，既然 Feature Toggle 实现原理如此简单，那么为什么我们还需要这个基础设施呢，如果我们直接用配置文件在应用内实现会怎样？</p>
+<p>首先，使用配置文件确实在某种程度上可以达到和 Feature Toggle 相关的效果，但是在实际使用场景里面我们有很多时候是需要多个服务通过同一个开关控制的，而配置文件同时是对应到单个项目或者服务的，如果需要在服务间共享配置文件，会带来管理不便利的问题。</p>
+<p>另外，一些简单的开关策略，我们使用配置文件实现没有难度，但是如果开关控制策略比较复杂，或者有多重开关策略叠加，这样的话就会增加我们的开发成本。所以总体上来看，如果遇到场景比较多的需求的时候，使用 Feature Toggle 设施是一个不错的选择。</p>
+<p>除此之外，使用 Feature Toggle 可以将部署和发布两个环节进行解耦，可以灵活有效的控制发布策略，规避可能存在的风险。</p>
+<h2 id="Unleash-介绍"><a href="#Unleash-介绍" class="headerlink" title="Unleash 介绍"></a>Unleash 介绍</h2><p>Unleash 是一个开源的 Feature Toggle 服务，Unleash 使用 Node.js 开发，使用 Postgres 进行数据存储。同时 Unleash 提供了 Java，Node.js，Go，Ruby，Python，.Net，PHP 等多种语言的 SDK。而且支持丰富的策略设置和多种常用的控制策略。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://resource.service.mkicon.com/resources/v/d203602d-b004-4b6a-911e-ba840a0b43fe"
+                      alt="Unleash基础结构"
+                ></p>
+<p>我们可以参照<a class="link"   target="_blank" rel="noopener" href="https://github.com/Unleash/unleash" >官方文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>进行安装。另外 Unleash 提供了一个简单的管理平台，我们可以在这个管理后台上进行 Feature Toggle 的管理和查看。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://resource.service.mkicon.com/resources/v/41d09c3a-b39e-4c43-a5bc-49156524927e"
+                      alt="Unleash管理平台"
+                ></p>
+<h2 id="Unleash-策略"><a href="#Unleash-策略" class="headerlink" title="Unleash 策略"></a>Unleash 策略</h2><p>Unleash 默认支持很多开关策略，这里我们逐个了解下：</p>
+<ul>
+<li>default</li>
+</ul>
+<p>表示默认的开关策略，仅由开和关两个状态，没有其他策略，通过手动控制。</p>
+<ul>
+<li>applicationHostname</li>
+</ul>
+<p>参数为一个字符串数组，表示一个hostname列表，如果请求的hostname在列表内，则开关开启，否则开关关闭。</p>
+<ul>
+<li>userWithId</li>
+</ul>
+<p>参数为一个字符串数组，表示一个用户ID的列表，如果请求中附带的用户ID在列表内，则开关状态为激活，否则为关闭状态。这个策略通常用于按照已登录用户进行A&#x2F;B测试或者灰度测试。</p>
+<ul>
+<li>remoteAddress</li>
+</ul>
+<p>参数为一个字符串数组，表示一个IP的列表，如果context中的IPAddress在列表中，则开关状态为激活，否则为关闭状态。</p>
+<ul>
+<li>gradualRolloutUserId</li>
+</ul>
+<p>参数为一个百分比参数和一个groupID，groupID 用于和其他的 Feature Toggle 进行联动。</p>
+<p>这个规则会按照 context 中传入的 userId 参数进行 hash，然后将 hash 的结果取 0 - 100，然后再按照百分比进行判断。在这样的策略下，就会有一个特点，如果百分比取值10%时候一个ID的开关状态是激活的时候，当百分比调整到20%的时候，这个ID的状态是不会变的。这样就可以保证同一个用户不会在参数发生变化的时候导致访问状态不一致。</p>
+<ul>
+<li>gradualRolloutSessionId</li>
+</ul>
+<p>这个测试和上一个策略类似，只是检查的是 context 中的 sessionid 参数。原理和上一个策略是一致的。至于为什么要区分这两个策略呢？上一个策略重点是用户ID，更多的是在用户已经登录的情况下使用；而这个测试时按照sessionid，会包括未登录用户。</p>
+<ul>
+<li>gradualRolloutRandom</li>
+</ul>
+<p>这个参数只有一个参数就是百分比，这个策略按照随机数生成方式进行匹配。</p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><h3 id="功能开关"><a href="#功能开关" class="headerlink" title="功能开关"></a>功能开关</h3><p>假设我们在项目中增加了一个新的功能，但我们并不想让这个功能马上开启，所以我们可以增加一个 default 策略，然后状态设置为关闭。然后当我们想要让这个功能开启时，把开关状态设置为开启就可以了。</p>
+<h3 id="A-x2F-B-测试"><a href="#A-x2F-B-测试" class="headerlink" title="A&#x2F;B 测试"></a>A&#x2F;B 测试</h3><p>假设我们对项目中的一个功能进行了改版，但是我们并不确定用户的反馈，所以我们可以通过A&#x2F;B测试来获取到用户对于新旧功能的反馈。这是我们可以增加一个 gradualRolloutUserId 策略，然后按照我们的需求进行百分比设置。这样我们就可以让不同的用户按照我们设置的比例去分别访问不同版本的功能。</p>
+<h3 id="灰度发布"><a href="#灰度发布" class="headerlink" title="灰度发布"></a>灰度发布</h3><p>和A&#x2F;B测试比较类似，假设我们对于项目中增加了新的功能，但是我们想要现在内部进行测试，或者在有限范围内的用户进行测试。</p>
+<p>那么我们可以增加一个 remoteAddress 策略，然后将办公网内的 IP 地址加入到策略中，我们就可以讲可以访问的范围控制在办公网范围内，而不影响其他用户。</p>
+<p>同时我们也可以增加一个 gradualRolloutSessionId 策略，在办公网测试通过后，我们可以通过 sessionid 进行百分比灰度开放测试。直至功能全部打开。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>了解了 Feature Toggle 后，可以在我们的项目中进行开关控制，而 Unleash 也是目前功能相对比较完整的 Feature Toggle 服务之一，后续我们在针对实际的使用方法进行描述。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：Unleash 入门</li>
+        <li>本文作者：kenticny</li>
+        <li>创建时间：2020-09-29 23:57:18</li>
+        <li>
+            本文链接：https://luyun.io/2020/09/29/feature-toggle-overview/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD/">#基础设施</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Unleash/">#Unleash</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Feature-Toggle/">#Feature Toggle</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E5%85%A5%E9%97%A8/">#入门</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2021/09/14/go-mod-compatibility-function/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Go 模块开发函数兼容性保证</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2020/04/06/go-slice-overview/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Go Slice 深入浅出</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+            
+                
+
+
+  <div class="adsense-unit adsense-unit-article_footer">
+    <ins class="adsbygoogle"
+      data-ad-client="ca-pub-2279937631428525"
+      data-ad-slot="3741741136"
+      data-ad-format="auto"
+      
+      
+      
+      
+      
+      data-full-width-responsive="true"
+      style="display:block;width:100%;min-width:320px;max-width:900px;height:90px;">
+    </ins>
+    <script data-pjax>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+            
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments">&nbsp;评论</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-pjax
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-pjax>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5f5e02832431c7e26875',
+                    clientSecret: '984eb6ac0c0de7669aa83d6d11e3b3c8c1c33c4b',
+                    repo: 'kenticny.github.io',
+                    owner: 'kenticny',
+                    admin: ['kenticny'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Unleash 入门</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Feature-Toggle-%E7%AE%80%E4%BB%8B"><span class="nav-text">Feature Toggle 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Feature-Toggle-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-text">Feature Toggle 实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-Feature-Toggle"><span class="nav-text">为什么要使用 Feature Toggle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unleash-%E4%BB%8B%E7%BB%8D"><span class="nav-text">Unleash 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unleash-%E7%AD%96%E7%95%A5"><span class="nav-text">Unleash 策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E5%BC%80%E5%85%B3"><span class="nav-text">功能开关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-x2F-B-%E6%B5%8B%E8%AF%95"><span class="nav-text">A&#x2F;B 测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83"><span class="nav-text">灰度发布</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<a href="/">碎片人生</a>
+            
+            <span class="powered-by-container">&nbsp;&nbsp;Powered by <a target="_blank" href="https://hexo.io">Hexo</a>. </span>
+            <span class="theme-version-container">&nbsp;&nbsp;Theme by <a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.0</a>
+            
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+    
+        <script async data-pjax src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2279937631428525" crossorigin="anonymous"></script>
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?95824cda1ebc32e013f3388e3b0f27e6";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2GZ6RF852"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z2GZ6RF852');
+</script>
+</body>
+</html>
